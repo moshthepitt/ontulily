@@ -14,6 +14,7 @@ setup(
     url='https://github.com/moshthepitt/ontulily',
     install_requires=[
         'django_micro',
+        'fake-useragent',
         'requests'
     ],
     classifiers=[
