@@ -4,11 +4,14 @@
 
 Website stress testing can be useful to find out whether your website is susceptible to [DoS](https://en.wikipedia.org/wiki/Denial-of-service_attack) or [DDoS](https://en.wikipedia.org/wiki/Denial-of-service_attack#Distributed_attack) attacks.
 
-## Useful information
+## Documentation
+
+### Design
 
 * [Ontulily design guidelines](https://github.com/moshthepitt/ontulily/blob/master/docs/design.md)
+* [Flooding approach](https://github.com/moshthepitt/ontulily/blob/master/docs/flood.md)
 
-## DDos & Dos Attacks
+## DDos & Dos attacks
 
 At this time, `ontulily` is designed to test for susceptibility to [Layer 7](https://en.wikipedia.org/wiki/Application_layer) DoS and DDoS attacks.
 
