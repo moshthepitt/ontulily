@@ -7,7 +7,6 @@ from setuptools import setup
 setup(
     name='ontulily',
     version='0.1',
-    packages=['ontulily'],
     description='A testing tool.',
     license='MIT',
     author='moshthepitt',

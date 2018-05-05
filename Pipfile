@@ -1,0 +1,17 @@
+[[source]]
+verify_ssl = true
+url = "https://pypi.org/simple"
+name = "pypi"
+
+[requires]
+python_version = "3.5"
+
+[packages]
+"e1839a8" = {path = ".", editable = true}
+
+[dev-packages]
+tox = "*"
+ipdb = "*"
+pipenv = "*"
+"flake8" = "*"
+pycodestyle = "*"
