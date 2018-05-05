@@ -1,5 +1,7 @@
 # ontulily
 
+[![Build Status](https://travis-ci.org/moshthepitt/ontulily.svg?branch=master)](https://travis-ci.org/moshthepitt/ontulily)
+
 `Ontulily` is a tool that can be used for website _stress testing_.
 
 Website stress testing can be useful to find out whether your website is susceptible to [DoS](https://en.wikipedia.org/wiki/Denial-of-service_attack) or [DDoS](https://en.wikipedia.org/wiki/Denial-of-service_attack#Distributed_attack) attacks.
