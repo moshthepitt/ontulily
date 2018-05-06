@@ -1,10 +1,12 @@
 """
 Tests ontulily.floods.flood.py
 """
-from unittest.mock import patch, MagicMock
-import requests_mock
-from django.test import TestCase
+import random
+from unittest.mock import MagicMock, patch
 
+from django.test import TestCase, override_settings
+
+import requests_mock
 from fake_useragent import UserAgent
 from requests.exceptions import RetryError
 
@@ -119,5 +121,36 @@ class TestFlood(TestCase):
             urls=['http://example.com', 'http://httpbin.org/status/500',
                   'http://invalidurl'])
         results = list(results)
+        self.assertEquals(3, len(results))
         for result in results:
             self.assertFalse(result['success'])
+
+    @override_settings(
+        MAX_WORKERS=23,
+        REQUESTS_RETRIES=0,
+        REQUESTS_BACKOFF=0
+    )
+    @requests_mock.Mocker()
+    def test_flood(self, mocked):
+        """
+        Test flooding
+
+        Lets send a flood and ascertain that everything goes well
+        """
+        mocked.get('http://example.com', text=':-)')
+        mocked.get('http://example2.com', exc=ConnectionError)
+        # some good urls
+        urls = ['http://example.com' for x in range(0, 1000)]
+        # some bad urls
+        urls = urls + ['http://example2.com' for y in range(0, 65)]
+        # mix them
+        random.shuffle(urls)
+        # send requests
+        results = quick_request_urls(urls=urls)
+        results = list(results)
+        # ensure we have everything
+        self.assertEquals(1065, len(results))
+        # assert count number of good
+        self.assertEquals(1000, len([x for x in results if x['success']]))
+        # assert count number of bad
+        self.assertEquals(65, len([x for x in results if not x['success']]))
