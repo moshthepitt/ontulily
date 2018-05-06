@@ -15,7 +15,8 @@ setup(
     install_requires=[
         'django_micro',
         'fake-useragent',
-        'requests'
+        'requests',
+        'requests_futures'
     ],
     classifiers=[
         'Programming Language :: Python',
