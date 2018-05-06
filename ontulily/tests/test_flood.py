@@ -106,3 +106,18 @@ class TestFlood(TestCase):
         self.assertTrue(result['success'])
         self.assertEquals(200, result['response'].status_code)
         self.assertEquals('mosh was here', result['response'].text)
+
+    @requests_mock.Mocker()
+    def test_quick_request_urls_error(self, mocked):
+        """
+        Test quick_request_urls handles errors correctly
+        """
+        mocked.get('http://example.com', exc=ConnectionError)
+        mocked.get('http://httpbin.org/status/500', real_http=True)
+        mocked.get('http://invalidurl', real_http=True)
+        results = quick_request_urls(
+            urls=['http://example.com', 'http://httpbin.org/status/500',
+                  'http://invalidurl'])
+        results = list(results)
+        for result in results:
+            self.assertFalse(result['success'])
