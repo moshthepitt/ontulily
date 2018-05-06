@@ -10,9 +10,10 @@ from django.conf import settings
 
 from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter
+from requests.exceptions import ConnectionError as RequestsConnectionError
 from requests.exceptions import RetryError
-from urllib3.util import Retry
 from requests_futures.sessions import FuturesSession
+from urllib3.util import Retry
 
 USERAGENT = UserAgent()
 
@@ -118,6 +119,8 @@ def future_session_handler(future_session: object):
     except RetryError as exc:
         result['error'] = exc
     except ConnectionError as exc:
+        result['error'] = exc
+    except RequestsConnectionError as exc:
         result['error'] = exc
     else:
         result['success'] = True
