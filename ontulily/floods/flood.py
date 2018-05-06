@@ -8,8 +8,9 @@ from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter
 from requests.exceptions import RetryError
 from requests.packages.urllib3.util.retry import Retry
+from requests_futures.sessions import FuturesSession
 
-from ontulily.settings import (REQUESTS_BACKOFF, REQUESTS_RETRIES,
+from ontulily.settings import (MAX_WORKERS, REQUESTS_BACKOFF, REQUESTS_RETRIES,
                                REQUESTS_STATUS_FORCELIST)
 
 USERAGENT = UserAgent()
@@ -64,6 +65,23 @@ def requests_retry_session(retries: int=REQUESTS_RETRIES,
     See: https://www.peterbe.com/plog/best-practice-with-retries-with-requests
     """
     session = session or requests.Session()
+    retry = Retry(total=retries, read=retries, connect=retries,
+                  backoff_factor=backoff_factor,
+                  status_forcelist=status_forcelist)
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount('http://', adapter)
+    session.mount('https://', adapter)
+    return session
+
+
+def async_requests_retry_session(
+        retries: int=REQUESTS_RETRIES, backoff_factor: float=REQUESTS_BACKOFF,
+        status_forcelist: set=REQUESTS_STATUS_FORCELIST, session: object=None,
+        max_workers: int=MAX_WORKERS):
+    """
+    A wrapper around requests to enable retrying that uses async requests
+    """
+    session = session or FuturesSession(max_workers=MAX_WORKERS)
     retry = Retry(total=retries, read=retries, connect=retries,
                   backoff_factor=backoff_factor,
                   status_forcelist=status_forcelist)

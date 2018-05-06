@@ -5,10 +5,11 @@ from unittest.mock import patch
 
 from django.test import TestCase
 
-from requests.exceptions import RetryError
 from fake_useragent import UserAgent
+from requests.exceptions import RetryError
 
-from ontulily.floods.flood import get_request, requests_retry_session
+from ontulily.floods.flood import (async_requests_retry_session, get_request,
+                                   requests_retry_session)
 
 
 class TestFlood(TestCase):
@@ -62,3 +63,22 @@ class TestFlood(TestCase):
             requests_retry_session(
                 retries=0, backoff_factor=0).get(
                     'http://httpbin.org/status/500')
+
+    def test_async_requests_retry_session_success(self):
+        """
+        Test that a valid URL can be accessed normally using async
+        """
+        future = async_requests_retry_session(
+            retries=0, backoff_factor=0).get('http://example.com')
+        r = future.result()
+        self.assertEquals(200, r.status_code)
+
+    def test_async_requests_retry_session_error(self):
+        """
+        Tests that an invalid URL will eventually fail using async
+        """
+        with self.assertRaises(RetryError):
+            future = requests_retry_session(
+                retries=0, backoff_factor=0).get(
+                    'http://httpbin.org/status/500')
+            future.result()
